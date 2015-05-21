@@ -1,0 +1,9 @@
+<ul>
+  <% @users.each do |user| %>
+  	<% unless user.profile.nil? || current_user == user %>
+    	<li><%= user.profile.name %></li>
+    	<%= render 'friends_form', user: user %>
+
+    <% end %>
+  <% end %>
+</ul>

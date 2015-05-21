@@ -1,0 +1,5 @@
+<%= form_for current_user.profile do |f| %>
+  Name: <%= f.text_field :name %><br />
+  Blurb : <%= f.text_area :blurb %><br />
+  <%= f.submit %>
+<% end %>

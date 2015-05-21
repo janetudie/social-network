@@ -1,0 +1,12 @@
+  <span class='title'>
+    <h3> <%= friend.profile.name %> </h3>
+  </span>
+  <span class="content">
+    <%= friend.profile.blurb %>
+  </span>
+  <br>
+      <%= link_to "Unfriend", user_friend_path(user), method: :delete ,
+                                       data: { confirm: "Are you sure you want to unfriend?" } %>
+    <% end %>
+  </span>
+  <br>
