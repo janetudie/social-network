@@ -8,7 +8,7 @@ class UsersController < ApplicationController
 	def show
 	  if params[:id] 
       @user = User.find(params[:id])
-    else 
+    else
       @user = current_user
     end
 
@@ -20,8 +20,7 @@ class UsersController < ApplicationController
       @comments = Comment.where(author_id: @user)
       @activities = (@posts + @comments + @likes).sort_by(&:created_at).uniq
 
-
-      @friends = @user.friends.includes(:profile) # MUTUALS????
+      @friends = @user.inverse_friends.includes(:profile) + @user.friends.includes(:profile)
     end
 
     if @user == current_user

@@ -1,0 +1,52 @@
+  <span class='title'>
+    <h3> <%= @post.title %> </h3>
+  </span>
+  <span class="content">
+    <%= @post.content %>
+  </span>
+  <br>
+  <br>
+  <span class="timestamp">
+    Posted <%= time_ago_in_words(@post.created_at) %> ago, by <%= @post.author.profile.name %>
+    <% if current_user == @post.author %>
+      <%= link_to "edit", edit_post_path(@post) %>
+      <%= link_to "delete", @post, method: :delete,
+                                       data: { confirm: "Deletion is permanent. Are you sure?" } %>
+    <% end %>
+  </span>
+  <br>
+  <span class="likes">
+    Likes (<%= @post.likes.count %>)
+    <br>
+    <% if current_user.likes?(@post) %>
+      <%= link_to "Unlike", like_path(likeable_id: @post.id), method: :delete %>
+    <% else %>
+      <%= link_to "Like", likes_path(likeable_id: @post.id, likeable_type: "post"), action: "create", method: "Post" %>
+    <% end %>
+
+  </span>
+  <span class="comments">
+    <br>
+    <br>
+    Comments
+    <br>
+    <%= link_to "add comment", new_post_comment_path(@post) %>
+
+    <br>
+    <% if @post.comments.any? %>
+      <% @comments.each do |comment| %>
+        <%= comment.content %>
+        posted by: <%= comment.author.profile.name %>, (<%= comment.likes.count %>) likes.
+        <% if current_user.likes?(comment) %>
+          <%= link_to "Unlike", like_path(likeable_id: comment.id), method: :delete %>
+        <% else %>
+          <%= link_to "Like", likes_path(likeable_id: comment.id, likeable_type: "comment"), action: "create", method: "Post" %>
+        <% end %>
+        <br>
+      <% end %>
+    <% end %>
+
+
+
+  <br>
+  <br>

@@ -7,7 +7,11 @@ Rails.application.routes.draw do
   root 'users#show'
 
 
-  resources :posts
+  resources :posts do
+    resources :comments
+  end
+
+  resources :likes, only: [:create, :destroy]
 
   resources :users do
     delete 'friend' => 'friends#destroy'

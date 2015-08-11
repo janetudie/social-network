@@ -23,7 +23,8 @@ class FriendsController < ApplicationController
 	end
 
 	def destroy
-		@friendship = Friendship.where(friend_id: [current_user, params[:id]]).where(user_id: [current_user, params[:id]]).last # change using 'find_by'?
+		@friendship = Friendship.where(friend_id: current_user.id).where(user_id: params[:id]).last
+    @friendship ||= Friendship.where(friend_id: params[:id]).where(user_id: current_user.id).last
 		@friendship.destroy
 		flash[:notice] = "Unfriended."
 		redirect_to :back

@@ -8,8 +8,7 @@ class User < ActiveRecord::Base
   									dependent: :destroy
 
   has_many :liked,	class_name: 'Like', 
-  									foreign_key: :liker_id
-
+  									foreign_key: :liker_id                  
 
   has_many :comments, foreign_key: :author_id
 
@@ -17,9 +16,14 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :profile
 
   has_many :friendships
-  has_many :friends, -> { where(friendships: { approved: true }, user_id: id || friend_id: id) }, through: :friendships
-  has_many :incoming_requests, -> { where(friendships: { approved: false }) }, through: :friendships, source: :friend
-  has_many :outgoing_requests, -> { where(friendships: { approved: false }) }, through: :friendships, source: :user
+  has_many :friends, -> { where(friendships: { approved: true }) }, through: :friendships
+  has_many :inverse_friendships, class_name: 'Friendship', foreign_key: :friend_id
+  has_many :inverse_friends, -> { where(friendships: { approved: true }) }, through: :inverse_friendships, source: :user
+
+
+
+  # has_many :incoming_requests, -> { where(inverse_friendships: { approved: false }) }, through: :friendships, source: :friend
+  # has_many :outgoing_requests, -> { where(friendships: { approved: false }) }, through: :friendships, source: :user
 
 
 
@@ -32,8 +36,16 @@ class User < ActiveRecord::Base
     # do you want to include likes and comments in this? then maybe use a 'feedable' polymorphism
   end
 
-  def is_friend?(other_user)
-    Friendship.where(user_id: self.id, friend_id: other_user.id, approved: true).exists?  # MUTUALS???
+  def likes?(likeable)
+    Like.find_by(likeable_id: likeable.id)
   end
+
+  def is_friend?(other_user)
+    Friendship.where(user_id: self.id, friend_id: other_user.id, approved: true).exists? || Friendship.where(user_id: other_user.id, friend_id: self.id, approved: true).exists?
+  end
+
+ # def mutual_friends
+ # inverse_friends.joins(:friendships).where("friendships.user_id = users.id and friendships.friend_id = :self_id", self_id: self.id).all
+ # end
 
 end

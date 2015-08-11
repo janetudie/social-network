@@ -1,0 +1,5 @@
+<%= form_for [@post, Comment.new] do |f| %>
+	<%= f.text_area :content %>
+	<%= f.hidden_field :author_id, value: current_user.id  %>
+	<%= f.submit %>
+<% end %>
